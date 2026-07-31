@@ -3,5 +3,10 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=()
-  X-Robots-Tag: noindex, nofollow, noarchive
   Cache-Control: public, max-age=0, must-revalidate
+
+https://joinglippy.pages.dev/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+
+https://:version.joinglippy.pages.dev/*
+  X-Robots-Tag: noindex, nofollow, noarchive
