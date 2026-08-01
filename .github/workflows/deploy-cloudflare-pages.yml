@@ -23,9 +23,26 @@ jobs:
 
       - name: Prepare static Pages output
         run: |
+          set -euo pipefail
+          rm -rf .pages-output
           mkdir -p .pages-output
-          cp abraham-rusty-djajani-stealth-fintech.html .pages-output/index.html
+          cp index.html .pages-output/index.html
+          cp -r css js fonts .pages-output/
           cp _headers .pages-output/_headers
+
+      - name: Verify Pages output
+        run: |
+          set -euo pipefail
+          for f in index.html _headers css/styles.css css/fonts.css js/app.js \
+                   fonts/inter-var.woff2 fonts/manrope-var.woff2; do
+            test -s ".pages-output/$f" || { echo "missing or empty: $f"; exit 1; }
+          done
+          # every local asset the page references must exist in the output
+          grep -oE '(href|src)="(css|js|fonts)/[^"]+"' .pages-output/index.html \
+            | sed -E 's/.*"(.*)"/\1/' | sort -u | while read -r asset; do
+              test -s ".pages-output/$asset" || { echo "referenced but not shipped: $asset"; exit 1; }
+            done
+          echo "Pages output OK"
 
       - name: Deploy production site
         env:
